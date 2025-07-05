@@ -1,73 +1,74 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import api from '@/services/api'
 
-const router = useRouter();
+const router = useRouter()
 
 const form = ref({
   username: '',
-  password: ''
-});
+  password: '',
+})
 
-const errors = ref({});
-const isLoading = ref(false);
-const showSuccessPopup = ref(false);
+const errors = ref({})
+const isLoading = ref(false)
+const showSuccessPopup = ref(false)
 
 const validateForm = () => {
-  const newErrors = {};
-  if (!form.value.username.trim()) newErrors.username = 'Username wajib diisi';
+  const newErrors = {}
+  if (!form.value.username.trim()) newErrors.username = 'Username wajib diisi'
   if (!form.value.password || form.value.password.length < 6) {
-    newErrors.password = 'Password minimal 6 karakter';
+    newErrors.password = 'Password minimal 6 karakter'
   }
-  errors.value = newErrors;
-  return Object.keys(newErrors).length === 0;
-};
+  errors.value = newErrors
+  return Object.keys(newErrors).length === 0
+}
 
 const handleRegister = async () => {
-  errors.value = {};
-  isLoading.value = true;
+  errors.value = {}
+  isLoading.value = true
 
   if (!validateForm()) {
-    isLoading.value = false;
-    return;
+    isLoading.value = false
+    return
   }
 
   try {
-    await axios.post('/auth/register', {
+    await api.post('/auth/register', {
       username: form.value.username,
-      password: form.value.password
-    });
+      password: form.value.password,
+    })
 
-    showSuccessPopup.value = true;
+    showSuccessPopup.value = true
 
     setTimeout(() => {
-      router.push('/login');
-    }, 1500);
-
+      router.push('/login')
+    }, 1500)
   } catch (error) {
     if (error.response?.data?.message) {
-      errors.value.general = error.response.data.message;
+      errors.value.general = error.response.data.message
     } else if (error.response?.data?.errors) {
-      error.response.data.errors.forEach(err => {
-        errors.value[err.path] = err.msg;
-      });
+      error.response.data.errors.forEach((err) => {
+        errors.value[err.path] = err.msg
+      })
     } else {
-      errors.value.general = 'Terjadi kesalahan saat registrasi. Silakan coba lagi.';
+      errors.value.general = 'Terjadi kesalahan saat registrasi. Silakan coba lagi.'
     }
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8"
+  >
     <Card class="w-full max-w-md">
       <CardHeader>
         <CardTitle class="text-center text-2xl font-bold text-foreground">
@@ -76,7 +77,10 @@ const handleRegister = async () => {
       </CardHeader>
       <CardContent>
         <form @submit.prevent="handleRegister" class="space-y-6">
-          <div v-if="errors.general" class="text-destructive text-sm p-3 bg-destructive/10 rounded-md">
+          <div
+            v-if="errors.general"
+            class="text-destructive text-sm p-3 bg-destructive/10 rounded-md"
+          >
             {{ errors.general }}
           </div>
 
@@ -91,7 +95,9 @@ const handleRegister = async () => {
               :class="{ 'border-destructive': errors.username }"
               placeholder="Masukkan username"
             />
-            <span v-if="errors.username" class="text-destructive text-sm">{{ errors.username }}</span>
+            <span v-if="errors.username" class="text-destructive text-sm">{{
+              errors.username
+            }}</span>
           </div>
 
           <div>
@@ -106,7 +112,9 @@ const handleRegister = async () => {
               :class="{ 'border-destructive': errors.password }"
               placeholder="Password minimal 6 karakter"
             />
-            <span v-if="errors.password" class="text-destructive text-sm">{{ errors.password }}</span>
+            <span v-if="errors.password" class="text-destructive text-sm">{{
+              errors.password
+            }}</span>
           </div>
 
           <div>
@@ -119,7 +127,10 @@ const handleRegister = async () => {
 
         <p class="mt-6 text-center text-sm text-muted-foreground">
           Sudah punya akun?
-          <router-link to="/login" class="font-semibold text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-sm">
+          <router-link
+            to="/login"
+            class="font-semibold text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-sm"
+          >
             Login di sini
           </router-link>
         </p>
@@ -132,7 +143,6 @@ const handleRegister = async () => {
             Registrasi berhasil!
           </div>
         </transition>
-
       </CardContent>
     </Card>
   </div>
