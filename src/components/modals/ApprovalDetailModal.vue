@@ -4,13 +4,10 @@ import { defineProps, defineEmits } from 'vue'
 import { X } from 'lucide-vue-next'
 import { format } from 'date-fns'
 
-// Impor service untuk approve/reject
 import perdinApi from '@/services/perdin'
 
-// Impor komponen UI
 import { Button } from '@/components/ui/button'
 
-// Komponen ini menerima data perdin sebagai 'props' dari induknya
 const props = defineProps({
   perdinData: {
     type: Object,
@@ -18,13 +15,10 @@ const props = defineProps({
   },
 })
 
-// Komponen ini akan mengirim event 'close' dan 'action-completed' ke induk
 const emit = defineEmits(['close', 'action-completed'])
 
-// State untuk loading saat tombol ditekan
 const isProcessing = ref(false)
 
-// Helper untuk format mata uang
 const formatCurrency = (value) => {
   const numberValue = Number(value)
   if (isNaN(numberValue)) return 'Rp. 0,-'
@@ -35,11 +29,9 @@ const formatCurrency = (value) => {
   }).format(numberValue)
 }
 
-// Handler untuk tombol Approve
 async function handleApprove() {
   isProcessing.value = true
   try {
-    // Ini sudah benar, ia akan memanggil fungsi .put() yang baru kita ubah di service
     await perdinApi.approve(props.perdinData.id)
     alert('Pengajuan berhasil disetujui!')
     emit('action-completed')
@@ -51,11 +43,9 @@ async function handleApprove() {
   }
 }
 
-// Handler untuk tombol Reject
 async function handleReject() {
   isProcessing.value = true
   try {
-    // Ini sudah benar, ia akan memanggil fungsi .put() yang baru kita ubah di service
     await perdinApi.reject(props.perdinData.id)
     alert('Pengajuan berhasil ditolak!')
     emit('action-completed')

@@ -2,10 +2,8 @@
 import { defineEmits } from 'vue'
 import { Button } from '@/components/ui/button'
 
-// defineEmits sekarang akan digunakan oleh fungsi di bawah ini
 const emit = defineEmits(['confirm', 'close'])
 
-// Buat fungsi handler untuk setiap tombol
 function handleConfirm() {
   emit('confirm')
 }

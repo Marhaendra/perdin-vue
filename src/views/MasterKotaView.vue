@@ -3,23 +3,22 @@ import { ref, onMounted } from 'vue';
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next';
 import kotaApi from '@/services/kota';
 
-// Impor komponen UI dan Modal
+// shadcn-vue
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+// modal view
 import KotaFormModal from '@/components/modals/KotaFormModal.vue';
 import DeleteConfirmationModal from '@/components/modals/DeleteConfirmationModal.vue';
 
-// State utama
 const cities = ref([]);
 const isLoading = ref(true);
 
-// State untuk mengontrol modal
 const isFormModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const isEditMode = ref(false);
 const selectedCity = ref(null);
 
-// Fungsi untuk mengambil data
 async function fetchCities() {
   isLoading.value = true;
   try {
@@ -32,27 +31,23 @@ async function fetchCities() {
   }
 }
 
-// Fungsi untuk membuka modal tambah
 function handleAdd() {
   isEditMode.value = false;
   selectedCity.value = null;
   isFormModalOpen.value = true;
 }
 
-// Fungsi untuk membuka modal edit
 function handleEdit(city) {
   isEditMode.value = true;
   selectedCity.value = city;
   isFormModalOpen.value = true;
 }
 
-// Fungsi untuk membuka modal hapus
 function handleDelete(city) {
   selectedCity.value = city;
   isDeleteModalOpen.value = true;
 }
 
-// Fungsi untuk konfirmasi hapus
 async function confirmDelete() {
   try {
     await kotaApi.delete(selectedCity.value.id);

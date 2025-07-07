@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import api from '@/services/api'
+import authApi from '@/services/auth'
 import { useJwtStore } from '@/services/jwtStore'
 import CryptoJS from 'crypto-js'
 
@@ -27,7 +27,7 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const response = await api.post('auth/login', {
+    const response = await authApi.login({
       username: form.value.username,
       password: form.value.password,
     })

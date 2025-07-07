@@ -1,16 +1,15 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { Calendar as CalendarIcon } from 'lucide-vue-next'
-// 1. PERBAIKAN TANGGAL: Impor helper dari date-fns
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import CryptoJS from 'crypto-js'
 
-// Impor service API
+// service API
 import apiKota from '@/services/kota'
 import apiPerdin from '@/services/perdin'
 
-// Impor komponen shadcn-vue
+// shadcn-vue
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -57,7 +56,6 @@ async function fetchCities() {
   try {
     const response = await apiKota.getAll()
 
-    // PERBAIKAN KOTA: Akses array dari properti 'data' di dalam response.data
     if (response.data && Array.isArray(response.data.data)) {
       cities.value = response.data.data
       if (response.data.data.length === 0) {
@@ -76,32 +74,25 @@ async function fetchCities() {
 }
 const disabledDateRange = computed(() => {
   if (!form.value.tanggalAwal) {
-    return [] // Jika tanggal awal belum ada, jangan nonaktifkan apapun
+    return [] 
   }
 
-  // Buat objek date dari tanggal awal
   const startDate = new Date(form.value.tanggalAwal)
 
-  // Nonaktifkan semua tanggal SEBELUM tanggal awal.
-  // Properti 'end' berarti menonaktifkan semua tanggal yang berakhir SEBELUM tanggal ini.
   return [{ end: startDate }]
 })
-
-// Di dalam <script setup> di file TambahPerdinModal.vue
 
 async function handleSubmit() {
   isSubmitting.value = true
 
   let userId
 
-  // --- LANGKAH DEKRIPSI UNTUK MENDAPATKAN USER ID ---
   try {
-    const encryptedData = localStorage.getItem('userData') // Ambil data terenkripsi dari store
+    const encryptedData = localStorage.getItem('userData') 
     if (!encryptedData) {
       throw new Error('Data pengguna tidak ditemukan di sesi.')
     }
 
-    // Lakukan dekripsi
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, 'ud')
     const decryptedString = decryptedBytes.toString(CryptoJS.enc.Utf8)
     console.log(`decryptedString: ${decryptedString}`)
@@ -111,7 +102,7 @@ async function handleSubmit() {
     }
 
     const userObject = JSON.parse(decryptedString)
-    userId = userObject.id // Ambil ID dari objek hasil dekripsi
+    userId = userObject.id 
 
     console.log(`userID: ${userId}`)
 
@@ -122,11 +113,9 @@ async function handleSubmit() {
     console.error('Error saat mengambil data user:', error)
     alert(`Sesi Anda tidak valid. Silakan login kembali. encryptedData: ${userId}`)
     isSubmitting.value = false
-    return // Hentikan proses jika gagal mendapatkan userId
+    return 
   }
 
-  // --- Lanjutkan proses seperti sebelumnya ---
-  // Validasi form
   if (
     !form.value.kotaAsalId ||
     !form.value.kotaTujuanId ||
@@ -139,7 +128,6 @@ async function handleSubmit() {
     return
   }
 
-  // Siapkan payload
   const payload = {
     maksud_tujuan: form.value.keterangan,
     tanggal_berangkat: format(new Date(form.value.tanggalAwal), 'yyyy-MM-dd'),
@@ -149,7 +137,6 @@ async function handleSubmit() {
   }
 
   try {
-    // Panggil API dengan userId yang sudah kita dapatkan
     await apiPerdin.create(userId, payload)
     alert('Pengajuan perdin berhasil dibuat!')
     emit('submit-success')

@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { defineProps, defineEmits } from 'vue'
 import kotaApi from '@/services/kota'
 
-// Impor komponen UI dari shadcn-vue
+// shadcn-vue
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,7 +34,6 @@ const form = ref({
 const isProcessing = ref(false)
 const title = computed(() => (props.isEdit ? 'Edit Kota' : 'Tambah Kota'))
 
-// Jika ini mode edit, isi form dengan data awal
 onMounted(() => {
   if (props.isEdit && props.initialData) {
     form.value = { ...props.initialData }
@@ -45,10 +44,8 @@ async function handleSubmit() {
   isProcessing.value = true
   try {
     if (props.isEdit) {
-      // Panggil API update
       await kotaApi.update(props.initialData.id, form.value)
     } else {
-      // Panggil API create
       await kotaApi.create(form.value)
     }
     alert(`Data kota berhasil ${props.isEdit ? 'diperbarui' : 'ditambahkan'}!`)

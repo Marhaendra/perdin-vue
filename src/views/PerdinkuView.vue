@@ -6,7 +6,7 @@ import apiPerdin from '@/services/perdin'
 
 import { format } from 'date-fns'
 
-// Impor komponen shadcn-vue
+// shadcn-vue
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -24,7 +24,6 @@ const perdinList = ref([])
 const isLoading = ref(true)
 const isModalOpen = ref(false)
 
-// Fungsi untuk mengambil data dari API
 async function fetchPerdinList() {
   isLoading.value = true
   let userId
@@ -65,7 +64,7 @@ async function fetchPerdinList() {
           tanggalMulai: tglBerangkat ? format(tglBerangkat, 'dd MMM') : '', // Format: 28 Sep
           tanggalSelesai: tglPulang ? format(tglPulang, 'dd MMM, yyyy') : '', // Format: 09 Oct, 2022
           durasi: item.durasi,
-          keterangan: item.maksud_tujuan, // dari snake_case ke camelCase
+          keterangan: item.maksud_tujuan, 
           status: item.status,
         }
       })

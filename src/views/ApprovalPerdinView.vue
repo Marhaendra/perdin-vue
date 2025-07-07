@@ -1,34 +1,29 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue' // Tambahkan 'computed'
+import { ref, onMounted, computed } from 'vue' 
 import { Eye } from 'lucide-vue-next'
 import { format } from 'date-fns'
 import perdinApi from '@/services/perdin'
 
-// Impor komponen UI
+// shadcn-vue
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-// Impor komponen modal detail
 import ApprovalDetailModal from '@/components/modals/ApprovalDetailModal.vue'
 
-// State
 const allPerdinList = ref([]) 
 const isLoading = ref(true)
 const selectedPerdin = ref(null)
 
-// Computed property untuk memfilter pengajuan baru (status PENGAJUAN)
 const pengajuanBaruList = computed(() => 
   allPerdinList.value.filter(item => item.status === 'PENGAJUAN')
 );
 
-// Computed property untuk memfilter riwayat (status DISETUJUI atau DITOLAK)
 const historyList = computed(() => 
   allPerdinList.value.filter(item => item.status === 'DISETUJUI' || item.status === 'DITOLAK')
 );
 
-// Fungsi untuk mengambil data dari API
 async function fetchAllPerdin() {
   isLoading.value = true
   try {
